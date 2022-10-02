@@ -5,4 +5,12 @@ import { Component } from '@angular/core';
     templateUrl: './menu.component.html'
 })
 
-export class MenuComponent { }
+export class MenuComponent
+{
+    public isCollapsed: boolean;
+
+    constructor()
+    {
+        this.isCollapsed = false;
+    }
+}

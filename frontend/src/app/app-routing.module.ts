@@ -11,6 +11,11 @@ const routes: Routes = [
     path: "conta", loadChildren: () => import('./conta/conta.module')
       .then(m => m.ContaModule)
   },
+  {
+    path: "fornecedores",
+    loadChildren: () => import('./fornecedor/fornecedor.module')
+      .then(m => m.FornecedorModule)
+  },
 
   { path: "**", component: NotFoundComponent }
 

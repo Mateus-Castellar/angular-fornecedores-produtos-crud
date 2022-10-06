@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChildren } from '@angular/core';
-import { FormBuilder, FormControlName, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControlName, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { utilsBr } from 'js-brasil';
 import { NgBrazilValidators } from 'ng-brazil';
@@ -27,6 +27,7 @@ export class NovoComponent implements OnInit
   validationMessages: ValidationMessages;
   genericValidator: GenericValidator;
   displayMessage: DisplayMessage = {};
+  textoDocumento: string = "CPF (requerido)";
 
   formResult: string = '';
 
@@ -46,6 +47,7 @@ export class NovoComponent implements OnInit
       documento: {
         required: 'Informe o Documento',
         cpf: 'CPF em formato inválido',
+        cnpj: 'CNPJ em formato inválido',
       },
       logradouro: {
         required: 'Informe o Logradouro',
@@ -94,16 +96,64 @@ export class NovoComponent implements OnInit
     this.fornecedorForm.patchValue({ tipoFornecedor: '1', ativo: true });
   }
 
-  ngAfterViewInit(): void
+  configurarElementosValidacao()
   {
     let controlBlurs: Observable<any>[] = this.formInputElements
       .map((formControl: ElementRef) => fromEvent(formControl.nativeElement, 'blur'));
 
     merge(...controlBlurs).subscribe(() =>
     {
-      this.displayMessage = this.genericValidator.processarMensagens(this.fornecedorForm);
-      this.mudancasNaoSalvas = true;
+      this.validarFormulario();
     });
+  }
+
+  validarFormulario()
+  {
+    this.displayMessage = this.genericValidator.processarMensagens(this.fornecedorForm);
+    this.mudancasNaoSalvas = true;
+  }
+
+  ngAfterViewInit(): void
+  {
+    //quando o valor de PessoaFisica/PessoaJuridica alterar
+    this.tipoFornecedorForm().valueChanges
+      .subscribe(() =>
+      {
+        this.trocarValidacaoDocumento();
+        this.configurarElementosValidacao();
+        this.validarFormulario();
+      })
+
+    this.configurarElementosValidacao();
+  }
+
+  trocarValidacaoDocumento()
+  {
+    //1 => Pessoa Fisica
+    //2 => Pessoa Juridica
+
+    if (this.tipoFornecedorForm().value === "1")
+    {
+      this.tipoDocumentoForm().clearValidators();
+      this.tipoDocumentoForm().setValidators([Validators.required, NgBrazilValidators.cpf]);
+      this.textoDocumento = "CPF (requerido)";
+    }
+    else
+    {
+      this.tipoDocumentoForm().clearValidators();
+      this.tipoDocumentoForm().setValidators([Validators.required, NgBrazilValidators.cnpj]);
+      this.textoDocumento = "CNPJ (requerido)";
+    }
+  }
+
+  tipoDocumentoForm(): AbstractControl
+  {
+    return this.fornecedorForm.get("documento");
+  }
+
+  tipoFornecedorForm(): AbstractControl
+  {
+    return this.fornecedorForm.get("tipoFornecedor");
   }
 
   adicionarFornecedor()

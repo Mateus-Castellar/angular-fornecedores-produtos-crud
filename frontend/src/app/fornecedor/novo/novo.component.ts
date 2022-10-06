@@ -6,6 +6,8 @@ import { NgBrazilValidators } from 'ng-brazil';
 import { ToastrService } from 'ngx-toastr';
 import { fromEvent, merge, Observable } from 'rxjs';
 import { DisplayMessage, GenericValidator, ValidationMessages } from 'src/app/utils/generic-form-validation';
+import { StringUtils } from 'src/app/utils/string-utils';
+import { CepConsulta } from '../models/endereco';
 import { Fornecedor } from '../models/fornecedor';
 import { FornecedorService } from '../services/fornecedor.service';
 
@@ -155,6 +157,31 @@ export class NovoComponent implements OnInit
   tipoFornecedorForm(): AbstractControl
   {
     return this.fornecedorForm.get("tipoFornecedor");
+  }
+
+  preencherEnderecoConsulta(cep: CepConsulta)
+  {
+    this.fornecedorForm.patchValue({
+      endereco: {
+        logradouro: cep.logradouro,
+        bairro: cep.bairro,
+        cep: cep.cep,
+        cidade: cep.localidade,
+        estado: cep.uf,
+      }
+    })
+  }
+
+  buscaCep(cep: string)
+  {
+    cep = StringUtils.somenteNumeros(cep);
+    if (cep.length < 8) return;
+
+    this.fornecedorService.consultarCep(cep)
+      .subscribe(
+        cepRetorno => this.preencherEnderecoConsulta(cepRetorno),
+        erro => this.errors.push(erro)
+      );
   }
 
   adicionarFornecedor()

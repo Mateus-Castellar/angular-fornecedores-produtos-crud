@@ -1,6 +1,8 @@
 import { Component, ElementRef, OnInit, ViewChildren } from '@angular/core';
 import { FormBuilder, FormControlName, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { utilsBr } from 'js-brasil';
+import { NgBrazilValidators } from 'ng-brazil';
 import { ToastrService } from 'ngx-toastr';
 import { fromEvent, merge, Observable } from 'rxjs';
 import { DisplayMessage, GenericValidator, ValidationMessages } from 'src/app/utils/generic-form-validation';
@@ -28,6 +30,7 @@ export class NovoComponent implements OnInit
 
   formResult: string = '';
 
+  MASKS = utilsBr.MASKS;
   mudancasNaoSalvas: boolean;
 
   constructor(private fb: FormBuilder,
@@ -42,6 +45,7 @@ export class NovoComponent implements OnInit
       },
       documento: {
         required: 'Informe o Documento',
+        cpf: 'CPF em formato inválido',
       },
       logradouro: {
         required: 'Informe o Logradouro',
@@ -70,7 +74,7 @@ export class NovoComponent implements OnInit
   {
     this.fornecedorForm = this.fb.group({
       nome: ['', [Validators.required]],
-      documento: ['', [Validators.required]],
+      documento: ['', [Validators.required, NgBrazilValidators.cpf]],
       ativo: ['', [Validators.required]],
       tipoFornecedor: ['', [Validators.required]],
 

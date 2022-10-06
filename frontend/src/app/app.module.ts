@@ -17,7 +17,6 @@ import { NavegacaoModule } from './navegacao/navegacao.module';
     NavegacaoModule,
     BrowserAnimationsModule,
     ToastrModule.forRoot(),
-
   ],
   providers: [],
   bootstrap: [AppComponent]

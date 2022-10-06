@@ -1,6 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { catchError, Observable } from "rxjs";
+import { catchError, map, Observable } from "rxjs";
 import { BaseService } from "src/app/services/base.service";
 import { CepConsulta } from "../models/endereco";
 import { Fornecedor } from "../models/fornecedor";
@@ -36,7 +36,10 @@ export class FornecedorService extends BaseService
 
   novoFornecedor(fornecedor: Fornecedor): Observable<Fornecedor>
   {
-    return new Observable<Fornecedor>();
+    return this.http.post(this.urlServiceV1 + "fornecedores", fornecedor, this.obterAuthHeaderJson())
+      .pipe(
+        map(super.extractData),
+        catchError(super.serviceError));
   }
 
   atualizarFornecedor(fornecedor: Fornecedor): Observable<Fornecedor>

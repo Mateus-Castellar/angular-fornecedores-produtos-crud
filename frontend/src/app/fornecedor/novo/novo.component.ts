@@ -191,6 +191,9 @@ export class NovoComponent implements OnInit
       this.fornecedor = Object.assign({}, this.fornecedor, this.fornecedorForm.value);
       this.formResult = JSON.stringify(this.fornecedor);
 
+      this.fornecedor.endereco.cep = StringUtils.somenteNumeros(this.fornecedor.endereco.cep);
+      this.fornecedor.documento = StringUtils.somenteNumeros(this.fornecedor.documento);
+
       this.fornecedorService.novoFornecedor(this.fornecedor)
         .subscribe(
           sucesso => { this.processarSucesso(sucesso) },

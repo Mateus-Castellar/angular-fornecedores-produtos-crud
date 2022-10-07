@@ -11,6 +11,7 @@ import { FornecedorAppComponent } from "./fornecedor.app.component";
 import { fornecedorRoutingModule } from "./fornecedor.router";
 import { ListaComponent } from './lista/lista.component';
 import { NovoComponent } from './novo/novo.component';
+import { FornecedorGuard } from "./services/fornecedor.guard";
 import { FornecedorResolve } from "./services/fornecedor.resolve";
 import { FornecedorService } from "./services/fornecedor.service";
 
@@ -35,6 +36,7 @@ import { FornecedorService } from "./services/fornecedor.service";
   providers: [
     FornecedorService,
     FornecedorResolve,
+    FornecedorGuard,
   ],
 })
 

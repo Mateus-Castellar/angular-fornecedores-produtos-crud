@@ -1,0 +1,137 @@
+import { Component, ElementRef, OnInit, ViewChildren } from '@angular/core';
+import { FormBuilder, FormControlName, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+
+import { fromEvent, merge, Observable } from 'rxjs';
+
+import { utilsBr } from 'js-brasil';
+import { ToastrService } from 'ngx-toastr';
+
+import { DisplayMessage, GenericValidator, ValidationMessages } from 'src/app/utils/generic-form-validation';
+
+import { Fornecedor, Produto } from '../models/produto';
+import { ProdutoService } from '../services/produto.service';
+
+
+@Component({
+  selector: 'app-novo',
+  templateUrl: './novo.component.html'
+})
+export class NovoComponent implements OnInit
+{
+
+  @ViewChildren(FormControlName, { read: ElementRef }) formInputElements: ElementRef[];
+
+  produto: Produto;
+  fornecedores: Fornecedor[];
+  errors: any[] = [];
+  produtoForm: FormGroup;
+
+  validationMessages: ValidationMessages;
+  genericValidator: GenericValidator;
+  displayMessage: DisplayMessage = {};
+
+  MASKS = utilsBr.MASKS;
+  formResult: string = '';
+
+  mudancasNaoSalvas: boolean;
+
+  constructor(private fb: FormBuilder,
+    private produtoService: ProdutoService,
+    private router: Router,
+    private toastr: ToastrService)
+  {
+
+    this.validationMessages = {
+      fornecedorId: {
+        required: 'Escolha um fornecedor',
+      },
+      nome: {
+        required: 'Informe o Nome',
+        minlength: 'Mínimo de 2 caracteres',
+        maxlength: 'Máximo de 200 caracteres'
+      },
+      descricao: {
+        required: 'Informe a Descrição',
+        minlength: 'Mínimo de 2 caracteres',
+        maxlength: 'Máximo de 1000 caracteres'
+      },
+      imagem: {
+        required: 'Informe a Imagem',
+      },
+      valor: {
+        required: 'Informe o Valor',
+      }
+    };
+
+    this.genericValidator = new GenericValidator(this.validationMessages);
+  }
+
+  ngOnInit(): void
+  {
+
+    this.produtoService.obterFornecedores()
+      .subscribe(
+        fornecedores => this.fornecedores = fornecedores);
+
+    this.produtoForm = this.fb.group({
+      fornecedorId: ['', [Validators.required]],
+      nome: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(200)]],
+      descricao: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(1000)]],
+      imagem: ['', [Validators.required]],
+      valor: ['', [Validators.required]],
+      ativo: [true]
+    });
+  }
+
+  ngAfterViewInit(): void
+  {
+    let controlBlurs: Observable<any>[] = this.formInputElements
+      .map((formControl: ElementRef) => fromEvent(formControl.nativeElement, 'blur'));
+
+    merge(...controlBlurs).subscribe(() =>
+    {
+      this.displayMessage = this.genericValidator.processarMensagens(this.produtoForm);
+      this.mudancasNaoSalvas = true;
+    });
+  }
+
+  adicionarProduto()
+  {
+    if (this.produtoForm.dirty && this.produtoForm.valid)
+    {
+      this.produto = Object.assign({}, this.produto, this.produtoForm.value);
+      this.formResult = JSON.stringify(this.produto);
+
+      this.produtoService.novoProduto(this.produto)
+        .subscribe(
+          sucesso => { this.processarSucesso(sucesso) },
+          falha => { this.processarFalha(falha) }
+        );
+
+      this.mudancasNaoSalvas = false;
+    }
+  }
+
+  processarSucesso(response: any)
+  {
+    this.produtoForm.reset();
+    this.errors = [];
+
+    let toast = this.toastr.success('Produto cadastrado com sucesso!', 'Sucesso!');
+    if (toast)
+    {
+      toast.onHidden.subscribe(() =>
+      {
+        this.router.navigate(['/produtos/listar-todos']);
+      });
+    }
+  }
+
+  processarFalha(fail: any)
+  {
+    this.errors = fail.error.errors;
+    this.toastr.error('Ocorreu um erro!', 'Opa :(');
+  }
+}
+

@@ -10,6 +10,7 @@ import { ToastrService } from 'ngx-toastr';
 import { DisplayMessage, GenericValidator, ValidationMessages } from 'src/app/utils/generic-form-validation';
 
 import { Dimensions, ImageCroppedEvent, ImageTransform } from 'ngx-image-cropper';
+import { CurrencyUtils } from 'src/app/utils/currency-utils';
 import { Fornecedor, Produto } from '../models/produto';
 import { ProdutoService } from '../services/produto.service';
 
@@ -114,7 +115,10 @@ export class NovoComponent implements OnInit
     if (this.produtoForm.dirty && this.produtoForm.valid)
     {
       this.produto = Object.assign({}, this.produto, this.produtoForm.value);
-      this.formResult = JSON.stringify(this.produto);
+
+      this.produto.imagemUpload = this.croppedImage.split(',')[1];
+      this.produto.imagem = this.imagemNome;
+      this.produto.valor = CurrencyUtils.StringParaDecimal(this.produto.valor);
 
       this.produtoService.novoProduto(this.produto)
         .subscribe(

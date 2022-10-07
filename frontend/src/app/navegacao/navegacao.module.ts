@@ -4,6 +4,7 @@ import { RouterModule } from "@angular/router";
 
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 
+import { AcessoNegadoComponent } from './acesso-negado/acesso-negado.component';
 import { FooterComponent } from "./footer/footer.component";
 import { HomeComponent } from "./home/home.component";
 import { MenuLoginComponent } from "./menu-login/menu-login.component";
@@ -17,6 +18,7 @@ import { NotFoundComponent } from "./not-found/not-found.component";
         MenuComponent,
         NotFoundComponent,
         MenuLoginComponent,
+        AcessoNegadoComponent,
     ],
     imports: [
         CommonModule,
@@ -29,6 +31,7 @@ import { NotFoundComponent } from "./not-found/not-found.component";
         MenuComponent,
         NotFoundComponent,
         MenuLoginComponent,
+        AcessoNegadoComponent,
     ],
 })
 

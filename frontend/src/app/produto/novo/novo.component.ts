@@ -9,6 +9,7 @@ import { ToastrService } from 'ngx-toastr';
 
 import { DisplayMessage, GenericValidator, ValidationMessages } from 'src/app/utils/generic-form-validation';
 
+import { Dimensions, ImageCroppedEvent, ImageTransform } from 'ngx-image-cropper';
 import { Fornecedor, Produto } from '../models/produto';
 import { ProdutoService } from '../services/produto.service';
 
@@ -21,6 +22,18 @@ export class NovoComponent implements OnInit
 {
 
   @ViewChildren(FormControlName, { read: ElementRef }) formInputElements: ElementRef[];
+
+  //propriedades do componente de imagem
+  imageChangedEvent: any = '';
+  croppedImage: any = '';
+  canvasRotation = 0;
+  rotation = 0;
+  scale = 1;
+  showCropper = false;
+  containWhitinAspectRatio = false;
+  transform: ImageTransform = {};
+  imagemURL: string;
+  imagemNome: string;
 
   produto: Produto;
   fornecedores: Fornecedor[];
@@ -133,5 +146,30 @@ export class NovoComponent implements OnInit
     this.errors = fail.error.errors;
     this.toastr.error('Ocorreu um erro!', 'Opa :(');
   }
-}
 
+  fileChangeEvent(event: any): void
+  {
+    this.imageChangedEvent = event;
+    this.imagemNome = event.currentTarget.files[0].name;
+  }
+
+  imageCropped(event: ImageCroppedEvent)
+  {
+    this.croppedImage = event.base64;
+  }
+
+  imageLoad()
+  {
+    this.showCropper = true;
+  }
+
+  croppedReady(sourceImagemDimensions: Dimensions)
+  {
+    console.log("cropped read", sourceImagemDimensions);
+  }
+
+  loadImageFailed()
+  {
+    this.errors.push("o formato do arquivo " + this.imagemNome + " não é aceito");
+  }
+}

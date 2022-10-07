@@ -4,6 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { TextMaskModule } from 'angular2-text-mask';
 import { NgBrazil } from 'ng-brazil';
+import { ImageCropperModule } from 'ngx-image-cropper';
 import { NgxSpinnerModule } from "ngx-spinner";
 
 import { DetalhesComponent } from './detalhes/detalhes.component';
@@ -32,6 +33,7 @@ import { ProdutoService } from './services/produto.service';
     NgBrazil,
     TextMaskModule,
     NgxSpinnerModule,
+    ImageCropperModule,
     FormsModule,
     ReactiveFormsModule
   ],

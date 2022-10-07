@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { catchError, map, Observable } from "rxjs";
 import { BaseService } from "src/app/services/base.service";
-import { CepConsulta } from "../models/endereco";
+import { CepConsulta, Endereco } from "../models/endereco";
 import { Fornecedor } from "../models/fornecedor";
 
 @Injectable()
@@ -32,13 +32,13 @@ export class FornecedorService extends BaseService
   obterPorId(id: string): Observable<Fornecedor>
   {
     return this.http
-      .get<Fornecedor>(this.urlServiceV1 + "fornecedores/" + id, this.obterAuthHeaderJson())
+      .get<Fornecedor>(this.urlServiceV1 + "fornecedores/" + id, super.obterAuthHeaderJson())
       .pipe(catchError(super.serviceError));
   }
 
   novoFornecedor(fornecedor: Fornecedor): Observable<Fornecedor>
   {
-    return this.http.post(this.urlServiceV1 + "fornecedores", fornecedor, this.obterAuthHeaderJson())
+    return this.http.post(this.urlServiceV1 + "fornecedores", fornecedor, super.obterAuthHeaderJson())
       .pipe(
         map(super.extractData),
         catchError(super.serviceError));
@@ -47,7 +47,7 @@ export class FornecedorService extends BaseService
   atualizarFornecedor(fornecedor: Fornecedor): Observable<Fornecedor>
   {
     return this.http
-      .put(this.urlServiceV1 + "fornecedores/" + fornecedor.id, fornecedor, this.obterAuthHeaderJson())
+      .put(this.urlServiceV1 + "fornecedores/" + fornecedor.id, fornecedor, super.obterAuthHeaderJson())
       .pipe(
         map(super.extractData),
         catchError(super.serviceError));
@@ -62,5 +62,14 @@ export class FornecedorService extends BaseService
   {
     return this.http.get<CepConsulta>(`https://viacep.com.br/ws/${cep}/json/`)
       .pipe(catchError(super.serviceError));
+  }
+
+  atualizarEndereco(endereco: Endereco)
+  {
+    return this.http
+      .put(this.urlServiceV1 + "fornecedores/endereco/" + endereco.id, endereco, super.obterAuthHeaderJson())
+      .pipe(
+        map(super.extractData),
+        catchError(super.serviceError));
   }
 }

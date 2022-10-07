@@ -66,3 +66,8 @@ file,
 textarea {
     max-width: 400px;
 }
+
+/* corrigir bug da modal do NgBootstrap de exibição */
+.modal-backdrop.fade.show {
+    z-index: 1050 !important;
+}

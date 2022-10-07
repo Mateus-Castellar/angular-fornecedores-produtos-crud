@@ -1,5 +1,6 @@
 ﻿using AppCore.API.Controllers;
 using AppCore.API.DTO;
+using AppCore.API.Extensions;
 using AppCore.Business.Interfaces;
 using AppCore.Business.Models;
 using AutoMapper;
@@ -43,6 +44,7 @@ namespace AppCore.API.V1.Controllers
             return produtoViewModel;
         }
 
+        [ClaimsAuthorize("Produto", "Adicionar")]
         [HttpPost]
         public async Task<ActionResult<ProdutoDTO>> Adicionar(ProdutoDTO produtoDTO)
         {
@@ -60,6 +62,7 @@ namespace AppCore.API.V1.Controllers
             return CustomResponse(produtoDTO);
         }
 
+        [ClaimsAuthorize("Produto", "Atualizar")]
         [HttpPut("{id:guid}")]
         public async Task<IActionResult> Atualizar(Guid id, ProdutoDTO produtoDTO)
         {
@@ -97,6 +100,7 @@ namespace AppCore.API.V1.Controllers
             return CustomResponse(produtoDTO);
         }
 
+        [ClaimsAuthorize("Produto", "Excluir")]
         [HttpDelete("{id:guid}")]
         public async Task<ActionResult<ProdutoDTO>> Excluir(Guid id)
         {

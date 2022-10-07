@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { environment } from 'src/environments/environment';
 import { Produto } from '../models/produto';
 import { ProdutoService } from '../services/produto.service';
 
@@ -8,6 +9,8 @@ import { ProdutoService } from '../services/produto.service';
 })
 export class ListaComponent implements OnInit
 {
+
+  imagens: string = environment.imagensUrl;
 
   public produtos: Produto[];
   errorMessage: string;

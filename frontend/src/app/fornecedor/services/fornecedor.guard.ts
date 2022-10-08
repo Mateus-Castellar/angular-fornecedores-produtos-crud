@@ -1,61 +1,29 @@
 import { Injectable } from "@angular/core";
-import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from "@angular/router";
-import { LocalStorageUtils } from "src/app/utils/local-storage";
+import { ActivatedRouteSnapshot, CanActivate, Router } from "@angular/router";
+import { BaseGuard } from "src/app/services/base.guard";
+import { NovoComponent } from "../novo/novo.component";
 
 @Injectable()
-export class FornecedorGuard implements CanActivate
+export class FornecedorGuard extends BaseGuard implements CanActivate
 {
 
-  constructor(private router: Router) { }
-
-  localStorage = new LocalStorageUtils();
-
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot)
+  constructor(protected rota: Router) 
   {
-
-    if (!this.localStorage.obterTokenUsuario())
-    {
-      this.router.navigate(["/conta/login"], { queryParams: { returnUrl: this.router.url } });
-    }
-
-    let user = this.localStorage.obterUsuario();
-    let claim: any = route.data[0];
-
-    if (claim !== undefined)
-    {
-
-      //verificar se "a rota/tela" necessita de claims especificas para acessa-lá
-      let claim = route.data[0]["claim"];
-
-      if (claim)
-      {
-        if (!user.claims)
-        {
-          this.navegarAcessoNegado();
-        }
-
-        let userClaims = user.claims.find(lbda => lbda.type === claim.nome);
-
-        if (!userClaims)
-        {
-          this.navegarAcessoNegado();
-        }
-
-        let valoresClaim = userClaims.value as string;
-
-        if (!valoresClaim.includes(claim.valor))
-        {
-          this.navegarAcessoNegado();
-        }
-      }
-    }
-
-    return true;
+    super(rota);
   }
 
-  navegarAcessoNegado()
+  canDeactivate(component: NovoComponent)
   {
-    this.router.navigate(["/acesso-negado"]);
+    if (component.mudancasNaoSalvas)
+    {
+      return window.confirm('Tem certeza que deseja abandonar o preenchimento do formulario?');
+    }
+
+    return true
   }
 
+  canActivate(routeAc: ActivatedRouteSnapshot)
+  {
+    return super.validarClaims(routeAc);
+  }
 }

@@ -24,6 +24,8 @@ app.UseSwaggerConfig(apiVersionDescriptionProvider);
 
 app.UseAuthentication();
 
+app.UseStaticFiles();
+
 app.UseApiConfiguration();
 
 app.Run();

@@ -46,14 +46,14 @@
                     <input [checked]="produto.ativo" class="check-box" disabled="disabled" type="checkbox">
                 </td>
                 <td class="text-right">
-                    <a class="btn btn-warning" [routerLink]="['/produtos/detalhes',produto.id]">
-                        <span class="fa fa-search"></span>
+                    <a class="btn btn-info" [routerLink]="['/produtos/detalhes',produto.id]">
+                        Detalhes
                     </a>&nbsp;
-                    <a class="btn btn-info" [routerLink]="['/produtos/editar',produto.id]">
-                        <span class="fa fa-pencil-alt"></span>
+                    <a class="btn btn-warning" [routerLink]="['/produtos/editar',produto.id]">
+                        Editar
                     </a>&nbsp;
                     <a class="btn btn-danger" [routerLink]="['/produtos/excluir',produto.id]">
-                        <span class="fa fa-trash"></span>
+                        Deletar
                     </a>
                 </td>
             </tr>

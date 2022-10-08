@@ -3,25 +3,19 @@ import { FormBuilder, FormControlName, FormGroup, Validators } from '@angular/fo
 import { ActivatedRoute, Router } from '@angular/router';
 import { CustomValidators } from '@narik/custom-validators';
 import { ToastrService } from 'ngx-toastr';
-import { fromEvent, merge, Observable } from 'rxjs';
-import { DisplayMessage, GenericValidator, ValidationMessages } from 'src/app/utils/generic-form-validation';
+import { FormBaseComponent } from 'src/app/base-components/form-base.components';
 import { Usuario } from '../models/usuario';
 import { ContaService } from '../services/conta.service';
-
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
 })
 
-export class LoginComponent implements OnInit
+export class LoginComponent extends FormBaseComponent implements OnInit
 {
 
   @ViewChildren(FormControlName, { read: ElementRef }) formInputElements: ElementRef[];
-
-  validationMessages: ValidationMessages;
-  genericValidator: GenericValidator;
-  displayMessage: DisplayMessage = {};
 
   returnUrl: string;
 
@@ -32,6 +26,9 @@ export class LoginComponent implements OnInit
   constructor(private fb: FormBuilder, private contaService: ContaService, private router: Router,
     private toastrService: ToastrService, private route: ActivatedRoute)
   {
+
+    super();
+
     this.validationMessages = {
       email: {
         required: 'Informe o e-mail',
@@ -44,7 +41,7 @@ export class LoginComponent implements OnInit
     };
 
     this.returnUrl = this.route.snapshot.queryParams["returnUrl"];
-    this.genericValidator = new GenericValidator(this.validationMessages);
+    super.configurarMensagensValidacaoBase(this.validationMessages);
   }
 
   ngOnInit(): void
@@ -57,13 +54,7 @@ export class LoginComponent implements OnInit
 
   ngAfterViewInit(): void
   {
-    let controlBlurs: Observable<any>[] = this.formInputElements
-      .map((formControl: ElementRef) => fromEvent(formControl.nativeElement, 'blur'));
-
-    merge(...controlBlurs).subscribe(() =>
-    {
-      this.displayMessage = this.genericValidator.processarMensagens(this.loginForm);
-    });
+    super.configurarValidacaoFormularioBase(this.formInputElements, this.loginForm);
   }
 
   login()

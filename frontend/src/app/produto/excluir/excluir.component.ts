@@ -4,6 +4,7 @@ import { ProdutoService } from '../services/produto.service';
 
 import { ToastrService } from 'ngx-toastr';
 
+import { environment } from 'src/environments/environment';
 import { Produto } from '../models/produto';
 
 @Component({
@@ -13,6 +14,7 @@ import { Produto } from '../models/produto';
 export class ExcluirComponent
 {
 
+  imagens: string = environment.imagensUrl;
   produto: Produto;
 
   constructor(private produtoService: ProdutoService,

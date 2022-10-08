@@ -15,7 +15,7 @@ export class FornecedorGuard implements CanActivate
 
     if (!this.localStorage.obterTokenUsuario())
     {
-      this.navegarAcessoNegado();
+      this.router.navigate(["/conta/login"], { queryParams: { returnUrl: this.router.url } });
     }
 
     let user = this.localStorage.obterUsuario();

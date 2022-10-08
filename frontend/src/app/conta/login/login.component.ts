@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChildren } from '@angular/core';
 import { FormBuilder, FormControlName, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CustomValidators } from '@narik/custom-validators';
 import { ToastrService } from 'ngx-toastr';
 import { fromEvent, merge, Observable } from 'rxjs';
@@ -23,13 +23,14 @@ export class LoginComponent implements OnInit
   genericValidator: GenericValidator;
   displayMessage: DisplayMessage = {};
 
+  returnUrl: string;
 
   errors: any[] = [];
   loginForm: FormGroup;
   usuario: Usuario;
 
   constructor(private fb: FormBuilder, private contaService: ContaService, private router: Router,
-    private toastrService: ToastrService)
+    private toastrService: ToastrService, private route: ActivatedRoute)
   {
     this.validationMessages = {
       email: {
@@ -42,6 +43,7 @@ export class LoginComponent implements OnInit
       },
     };
 
+    this.returnUrl = this.route.snapshot.queryParams["returnUrl"];
     this.genericValidator = new GenericValidator(this.validationMessages);
   }
 
@@ -89,7 +91,9 @@ export class LoginComponent implements OnInit
     {
       toast.onHidden.subscribe(() =>
       {
-        this.router.navigate(["/home"]);
+        this.returnUrl ?
+          this.router.navigate([this.returnUrl]) :
+          this.router.navigate(["/home"]);
       });
     }
   }
